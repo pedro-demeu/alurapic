@@ -5,6 +5,8 @@ import VueRouter from 'vue-router';
 
 import { routes } from './routes';
 
+import './directives/Transform'
+
 Vue.use(VueRouter);
 
 // adicionando a propriedade mode com o valor history.

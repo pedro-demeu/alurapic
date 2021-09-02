@@ -1,11 +1,11 @@
 <template>
   <div>
-    <h1 class="titulo centralizado">{{ titulo }}</h1>
+    <h1 v-meu-transform="15" class="titulo centralizado">{{ titulo }}</h1>
     <input v-on:input="filtro = $event.target.value" type="text" class="filtro" placeholder="filtre pelo titulo" />
     <ul class="lista-fotos">
       <li class="lista-fotos-item" v-for="foto in fotosComFiltro" v-bind:key="foto">
         <meu-painel :titulo="foto.titulo">
-          <minha-img :url="foto.url" :titulo="foto.titulo"></minha-img>
+          <minha-img v-meu-transform.animate.reverse="15" :url="foto.url" :titulo="foto.titulo"></minha-img>
           <meu-botao 
           @botaoAtivado="remover(foto)" 
           tipo="button" 
