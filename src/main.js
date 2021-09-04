@@ -7,16 +7,16 @@ import { routes } from './routes';
 
 import './directives/Transform'
 
-Vue.use(VueRouter);
-
-// adicionando a propriedade mode com o valor history.
-
 const router = new VueRouter({
   routes, 
   mode: 'history'
 });
 
 Vue.use(VueResource);
+Vue.http.options.root = "http://localhost:3000"
+
+Vue.use(VueRouter);
+
 
 new Vue({
   el: '#app',

@@ -36,6 +36,8 @@
 import ImagemResponsive from "../imagem-responsiva/ImagemResponsive.vue";
 import Botao from "../shared/botao/Botao.vue";
 import Painel from "../shared/painel/Painel.vue";
+import FotoService from "../../components/domain/foto/FotoService";
+
 export default {
   data() {
     return {
@@ -51,16 +53,6 @@ export default {
     "meu-botao": Botao,
   },
 
-  created() {
-    this.$http
-      .get("http://localhost:3000/v1/fotos")
-      .then((res) => res.json())
-      .then(
-        (fotos) => (this.fotos = fotos),
-        (err) => console.log(err)
-      );
-  },
-
   computed: {
     fotosComFiltro() {
       if (this.filtro != "") {
@@ -74,17 +66,28 @@ export default {
 
   methods: {
     remover(foto) {
-      this.$http.delete(`http://localhost:3000/v1/fotos/${foto._id}`)
-      .then(() => {
-          let indice = this.fotos.indexOf(foto)
-          this.fotos.splice(indice, 1)
+      this.service.apaga(foto._id)
+        .then(()=>{
+          let indice = this.fotos.indexOf(foto);
+          this.fotos.splice(indice, 1);
           this.mensagem = "Foto removida com sucesso";
-        }, err => {
+        },(err) => {
           console.log(err);
-          this.mensagem = "não foi possível remover foto";
-        }
-      );
+          this.mensagem = "não foi possível remover foto";        
+        });
     },
+  },
+
+  created() {
+
+    this.service =  new FotoService(this.$resource);
+
+    this.service
+      .lista()
+      .then(
+        (fotos) => (this.fotos = fotos),
+        (err) => console.log(err)
+      );
   },
 };
 </script>
