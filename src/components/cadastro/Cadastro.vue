@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1 class="centralizado">Cadastro</h1>
-    <h2 class="centralizado">{{foto.titulo}}</h2>
+    <h2 class="centralizado">{{ foto.titulo }}</h2>
 
     <h2 v-if="foto._id" class="centralizado">Alterando</h2>
     <h2 v-else class="centralizado">Incluindo</h2>
@@ -13,7 +13,13 @@
           id="titulo"
           autocomplete="off"
           v-model="foto.titulo"
+          v-validate
+          data-vv-rules="required|min:3|max:30"
+          name="titulo"
         />
+        <span class="erro" v-show="errors.has('titulo')">{{
+          errors.first("titulo")
+        }}</span>
       </div>
 
       <div class="controle">
@@ -21,9 +27,20 @@
         <input
           id="url"
           autocomplete="off"
-          v-model.lazy="foto.url"
+          name="url"
+          v-model="foto.url"
+          v-validate
+          data-vv-rules="required"
         />
-        <imagem-responsiva v-show="foto.url" :url="foto.url" :titulo="foto.titulo" />
+        <span class="erro" v-show="errors.has('url')">{{
+          errors.first("url")
+        }}</span>
+
+        <imagem-responsiva
+          v-show="foto.url"
+          :url="foto.url"
+          :titulo="foto.titulo"
+        />
       </div>
 
       <div class="controle">
@@ -37,7 +54,7 @@
 
       <div class="centralizado">
         <meu-botao rotulo="GRAVAR" tipo="submit" />
-        <router-link :to="{name: 'home'}"
+        <router-link :to="{ name: 'home' }"
           ><meu-botao rotulo="VOLTAR" tipo="button"
         /></router-link>
       </div>
@@ -50,47 +67,46 @@ import ImagemResponsiva from "../imagem-responsiva/ImagemResponsive.vue";
 
 import Botao from "../shared/botao/Botao.vue";
 
-import Foto from '../../components/domain/foto/Foto'
+import Foto from "../../components/domain/foto/Foto";
 
-import FotoService from '../domain/foto/FotoService'
+import FotoService from "../domain/foto/FotoService";
 
 export default {
   components: {
     "imagem-responsiva": ImagemResponsiva,
     "meu-botao": Botao,
-    
   },
   data() {
     return {
-      foto: new Foto(
-
-      ),
-      id: this.$route.params.id
+      foto: new Foto(),
+      id: this.$route.params.id,
     };
   },
 
   methods: {
     grava() {
-      
-      this.service
-        .cadastra(this.foto)
-        .then(()=> {
-          if (this.id){
-            this.$router.push({ name: 'home'})
-          }
-          this.foto = new Foto(), err => console.log(err)
-        })
+      this.$validator.validateAll().then((success) => {
+        if (success) {
+          this.service.cadastra(this.foto).then(() => {
+            if (this.id) {
+              this.$router.push({ name: "home" });
+            }
+            (this.foto = new Foto()), (err) => console.log(err);
+          });
+        } else {
+          
+        }
+      });
     },
   },
 
-  created(){
-    this.service = new FotoService(this.$resource)
-    
-    if (this.id){
-      this.service.busca(this.id)
-      .then(foto=>this.foto=foto)
+  created() {
+    this.service = new FotoService(this.$resource);
+
+    if (this.id) {
+      this.service.busca(this.id).then((foto) => (this.foto = foto));
     }
-  }
+  },
 };
 </script>
 <style scoped>
@@ -115,5 +131,8 @@ export default {
 
 .centralizado {
   text-align: center;
+}
+.erro {
+  color: red;
 }
 </style>
