@@ -4,9 +4,8 @@ import VueResource from 'vue-resource';
 import VueRouter from 'vue-router';
 import VeeValidate from 'vee-validate';
 import msg from './pt_BR';
-
 import { routes } from './routes';
-
+import 'bootstrap/dist/css/bootstrap.css'
 import './directives/Transform'
 
 const router = new VueRouter({
